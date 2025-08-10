@@ -41,8 +41,6 @@ export async function getMedications(): Promise<Medication[]> {
 }
 
 export async function createMedicationSchedule(medicationSchedule: MedicationSchedule): Promise<MedicationSchedule> {
-
-  console.log('Creating scheduled medication:', medicationSchedule);
   const response = await fetch(`${BASE_URL}/medicationSchedules`, {
     method: 'POST',
     headers: {
@@ -70,6 +68,8 @@ export async function toggleMedicationStatus(medicationScheduleId: string) {
   if (!response.ok) {
     throw new Error(`Error toggling medication status: ${response.statusText}`);
   }
-  
-  return response.json();
+
+  const data = await response.json();
+
+  return data as MedicationSchedule;
 }

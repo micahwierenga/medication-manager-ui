@@ -1,11 +1,12 @@
 import { useParams } from 'react-router-dom';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPatientById, toggleMedicationStatus } from '../api/patients';
 import type { Patient, MedicationSchedule } from '../types/patient';
 import ScheduleMedicationForm from '../components/ScheduleMedicationForm';
 
 // This component fetches and displays details of a specific patient
 export default function PatientDetails() {
+  const queryClient = useQueryClient();
   const { id: patientId } = useParams<{ id: string }>();
 
   if (!patientId) {
@@ -20,10 +21,24 @@ export default function PatientDetails() {
 
   const handleToggleStatus = useMutation({
     mutationFn: (medicationId: string) => toggleMedicationStatus(medicationId),
-    onSuccess: () => {
-      // Invalidate queries or update local state as needed
+    onSuccess: (updatedSchedule) => {
+      // Update the cached patient data
+      queryClient.setQueryData(['patient', patientId], (oldData: Patient | undefined) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          medicationSchedules: oldData.medicationSchedules?.map(schedule =>
+            schedule.id === updatedSchedule.id
+              ? updatedSchedule
+              : schedule
+          ),
+        };
+      });
       
     },
+    onError: (error) => {
+      console.error('Error toggling medication status here:', error);
+    }
   });
 
   if (isLoading) {
