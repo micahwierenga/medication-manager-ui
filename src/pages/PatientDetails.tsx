@@ -34,7 +34,6 @@ export default function PatientDetails() {
           ),
         };
       });
-      
     },
     onError: (error) => {
       console.error('Error toggling medication status here:', error);
@@ -57,8 +56,6 @@ export default function PatientDetails() {
     (schedule: MedicationSchedule) => new Date(schedule.date) < new Date()
   ) || [];
 
-
-  // Display patient details
   return (
     <div>
       <h2>Patient Details: {data?.firstName} {data?.lastName}</h2>
@@ -80,7 +77,16 @@ export default function PatientDetails() {
                 <td>{new Date(medication.date).toLocaleDateString()}</td>
                 <td>{medication.medicationName}</td>
                 <td>{medication.dosage}</td>
-                <td>{medication.completed ? 'Completed' : 'Pending'}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={medication.completed}
+                    onChange={() => {
+                      if (!medication.id) return;
+                      handleToggleStatus.mutate(medication.id);
+                    }}
+                  />
+                </td>
               </tr>
             ))
           ) : (
@@ -113,11 +119,10 @@ export default function PatientDetails() {
                     type="checkbox"
                     checked={medication.completed}
                     onChange={() => {
-                      // Handle toggle logic here if needed
                       if (!medication.id) return;
                       handleToggleStatus.mutate(medication.id);
                     }}
-                  />  
+                  />
                 </td>
               </tr>
             ))
