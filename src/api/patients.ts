@@ -1,9 +1,17 @@
 import type { Patient, MedicationSchedule, Medication } from '../types/patient';
 
 const BASE_URL = 'https://fn2kuyafkvw4oxgrklgy5hk5ci0lnhrj.lambda-url.us-west-2.on.aws';
+const API_KEY = '';
+
+const requestHeaders = {
+  'Content-Type': 'application/json',
+  'x-api-key': API_KEY,
+};
 
 export async function getPatients(): Promise<Patient[]> {
-  const response = await fetch(`${BASE_URL}/patients`);
+  const response = await fetch(`${BASE_URL}/patients`, {
+    headers: requestHeaders,
+  });
   if (!response.ok) {
     throw new Error(`Error fetching patients: ${response.statusText}`);
   }
@@ -16,7 +24,9 @@ export async function getPatients(): Promise<Patient[]> {
 }
 
 export async function getPatientById(id: string): Promise<Patient> {
-  const response = await fetch(`${BASE_URL}/patients/${id}`);
+  const response = await fetch(`${BASE_URL}/patients/${id}`, {
+    headers: requestHeaders,
+  });
   if (!response.ok) {
     throw new Error(`Error fetching patient with ID ${id}: ${response.statusText}`);
   }
@@ -29,7 +39,9 @@ export async function getPatientById(id: string): Promise<Patient> {
 }
 
 export async function getMedications(): Promise<Medication[]> {
-  const response = await fetch(`${BASE_URL}/medications`);
+  const response = await fetch(`${BASE_URL}/medications`, {
+    headers: requestHeaders,
+  });
   if (!response.ok) {
     throw new Error(`Error fetching medications: ${response.statusText}`);
   }
@@ -43,9 +55,7 @@ export async function getMedications(): Promise<Medication[]> {
 export async function createMedicationSchedule(medicationSchedule: MedicationSchedule): Promise<MedicationSchedule> {
   const response = await fetch(`${BASE_URL}/medicationSchedules`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: requestHeaders,
     body: JSON.stringify(medicationSchedule),
   });
 
@@ -63,6 +73,7 @@ export async function createMedicationSchedule(medicationSchedule: MedicationSch
 export async function toggleMedicationStatus(medicationScheduleId: string) {
   const response = await fetch(`${BASE_URL}/medicationSchedules/${medicationScheduleId}`, {
     method: 'PUT',
+    headers: requestHeaders,
   });
 
   if (!response.ok) {
