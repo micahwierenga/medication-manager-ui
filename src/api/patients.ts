@@ -1,7 +1,7 @@
 import type { Patient, MedicationSchedule, Medication } from '../types/patient';
 
-const BASE_URL = 'https://fn2kuyafkvw4oxgrklgy5hk5ci0lnhrj.lambda-url.us-west-2.on.aws';
-const API_KEY = '';
+const BASE_URL = ''; // Set your API base URL here
+const API_KEY = ''; // Set your API key here
 
 const requestHeaders = {
   'Content-Type': 'application/json',
